@@ -1,6 +1,6 @@
-# Property Data Analyzer Fix
+# Property Data Analyzer
 
-## What this script does
+## What this app does
 
 The script does the following things:
 
@@ -13,7 +13,7 @@ The script does the following things:
 4. Each script is a `worker` that can be run in parallel in different nodes (terminals) locally.
 
 
-## Prerequisites for this script
+## Prerequisites
 
 1. Create local DB with `docker compose up -d postgres`
 
@@ -39,7 +39,7 @@ The script does the following things:
     SEQUELIZE_TABLENAME
     ```
 
-## Running the script
+## Running
 
 1. Run `yarn build:clean`
 2. `node dist/index.js`
