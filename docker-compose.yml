@@ -1,0 +1,26 @@
+---
+version: "3.4"
+
+networks:
+  property-data-analyzer:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: "local"
+
+services:
+  postgres:
+    container_name: "property-data-analyzer"
+    environment:
+      - POSTGRES_PASSWORD=secret_password
+      - POSTGRES_USER=property-data-analyzer
+      - POSTGRES_DB=property_data_analyzer_db
+    image: "postgres:latest"
+    ports:
+      - "127.0.0.1:5466:5432"
+    networks:
+      - property-data-analyzer
+    volumes:
+      - ./docker-compose/postgres-entrypoint:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
