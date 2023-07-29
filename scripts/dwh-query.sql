@@ -1,9 +1,5 @@
 select
- id as policy_id,
- policy_number,
  policy_uuid,
- application_uuid,
- policy_bound_date,
  property_id
 from `postgres_pod_prod_public.policies`
 where

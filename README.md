@@ -2,24 +2,26 @@
 
 ## What this app does
 
-The script does the following things:
+There are 3 scripts that do the following things:
 
 1. Queries properties from a temporary table containing Policies and associated Property from a specified time duration
 
-2. For each of the above rows, retrieves property-data and policy-data. 
+2. For each of row, retrieves property-data and policy-data, and persists them to local DB
 
-3. TODO: finish the script
+3. Goes over each row with policy and property data, and compare them using known field mappings
 
-4. Each script is a `worker` that can be run in parallel in different nodes (terminals) locally.
+4. Persists the differences for each row of policy and property data
+
+5. 
 
 
 ## Prerequisites
 
-1. Create local DB with `docker compose up -d postgres`
+1. Create local DB with `docker compose up -d postgres` (alternatively, a local postgres DB can be used)
 
 2. Run `local-db-initialize.sql` on local db
 
-3. Run DWH query using `dwh-query.sql`, and import results into local DB
+3. Run DWH query using `dwh-query.sql`, and import results into local DB (import has to be done manually)
 
 4. The following environment variables need to be set in order to run the script
     ```shell
@@ -41,6 +43,7 @@ The script does the following things:
 
 ## Running
 
-1. Run `yarn build:clean`
-2. `node dist/index.js`
-3. Check logs
+1. Run `yarn install && yarn build:clean`
+2. `node dist/retrieve-property-data.js --numberOfThreads 1`
+3. `node dist/compare-property-data.js --numberOfThreads 1`
+4. `node dist/compute-diff-statistics.js`
