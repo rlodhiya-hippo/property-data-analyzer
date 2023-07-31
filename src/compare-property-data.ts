@@ -127,8 +127,8 @@ async function comparePropertyDataForOnePolicy(localDBConnection: Sequelize): Pr
 
         const updateSuccessQuery = `update ${tableName} `
             + `set status ='${StatusEnum.Processed}', `
-            + ` field_differences = to_jsonb('${mismatchJson}'::text), `
-            + ` missing_policy_fields = to_jsonb('${missingOnPolicyDataJson}'::text) `
+            + ` field_differences = to_jsonb( '${mismatchJson}' ), `
+            + ` missing_policy_fields = to_jsonb( '${missingOnPolicyDataJson}' ) `
             + `where id = '${rowId}';`;
         await localDBConnection.query(updateSuccessQuery, { transaction });
         await transaction.commit();

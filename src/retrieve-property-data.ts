@@ -108,8 +108,8 @@ async function retrievePropertyDataForOnePolicy(
 
             const updateSuccessQuery = `update ${tableName} `
                 + `set status ='${StatusEnum.Fetched}', `
-                + ` policy_data = to_jsonb( :policyJson ::text), `
-                + ` vendor_property_data = to_jsonb( :vendorPropertyJson ::text) `
+                + ` policy_data = to_jsonb( :policyJson ), `
+                + ` vendor_property_data = to_jsonb( :vendorPropertyJson ) `
                 + `where id = '${rowId}';`;
             await localDBConnection.query(updateSuccessQuery, {
                 transaction,
