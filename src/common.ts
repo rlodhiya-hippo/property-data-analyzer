@@ -40,9 +40,9 @@ function parsePropertyDataAnalyzerArgs(): PropertyDataAnalyzerArgs {
 export function getNumberOfThreads(): number {
     const args = parsePropertyDataAnalyzerArgs();
     let numberOfThreads = Math.abs(args.numberOfThreads ?? 1);
-    if (numberOfThreads > 10) {
-        console.log(`Number of threads is capped at 10, ${numberOfThreads} is not supported!`);
-        numberOfThreads = 10;
+    if (numberOfThreads > 50) {
+        console.log(`Number of threads is capped at 50, ${numberOfThreads} is not supported!`);
+        numberOfThreads = 50;
     }
     return numberOfThreads;
 }
