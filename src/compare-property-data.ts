@@ -106,13 +106,10 @@ async function comparePropertyDataForOnePolicy(localDBConnection: Sequelize): Pr
         const responseRow = results[0] as Record<string, unknown>;
 
         const rowId = get(responseRow, 'id') as string;
-        const policyData = get(responseRow, 'policy_data') as string;
-        const vendorPropertyData = get(responseRow, 'vendor_property_data') as string;
+        const policyData = get(responseRow, 'policy_data') as Record<string, unknown>;
+        const vendorPropertyData = get(responseRow, 'vendor_property_data') as Record<string, unknown>;
 
-        const vendorPropertyJson = JSON.parse(vendorPropertyData) as Record<string, unknown>;
-        const policyJson = JSON.parse(policyData) as Record<string, unknown>;
-
-        const { mismatch, missingOnPolicyData } = comparePropertyData(vendorPropertyJson, policyJson);
+        const { mismatch, missingOnPolicyData } = comparePropertyData(vendorPropertyData, policyData);
 
         const mismatchJson = JSON.stringify([ ...mismatch ]);
         const missingOnPolicyDataJson = JSON.stringify([ ...missingOnPolicyData ]);

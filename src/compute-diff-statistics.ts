@@ -74,11 +74,8 @@ async function countForOnePolicy (
         const responseRow = results[0] as Record<string, unknown>;
 
         const rowId = get(responseRow, 'id') as string;
-        const fieldDifferencesString = get(responseRow, 'field_differences') as string;
-        const missingPolicyFieldsString = get(responseRow, 'missing_policy_fields') as string;
-
-        const fieldDifferences = JSON.parse(fieldDifferencesString) as Array<string>;
-        const missingPolicyFields = JSON.parse(missingPolicyFieldsString) as Array<string>;
+        const fieldDifferences = get(responseRow, 'field_differences') as Array<string>;
+        const missingPolicyFields = get(responseRow, 'missing_policy_fields') as Array<string>;
 
         fieldDifferences.forEach((field) => {
             const currentCount = fieldDifferenceCounts.get(field) ?? 0;
