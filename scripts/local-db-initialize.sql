@@ -14,6 +14,7 @@ create table policy_property_map (
     status statusEnum not null default 'pending',
     policy_data jsonb null,
     vendor_property_data jsonb null,
+    property_data jsonb null,
     field_differences jsonb null,
     missing_policy_fields jsonb null
 );

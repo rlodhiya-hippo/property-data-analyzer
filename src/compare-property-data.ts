@@ -111,11 +111,11 @@ async function comparePropertyDataForOnePolicy(localDBConnection: Sequelize): Pr
 
         const { mismatch, missingOnPolicyData } = comparePropertyData(vendorPropertyData, policyData);
 
-        const mismatchJson = JSON.stringify([ ...mismatch ]);
+        const mismatchDataJson = JSON.stringify([ ...mismatch ]);
         const missingOnPolicyDataJson = JSON.stringify([ ...missingOnPolicyData ]);
 
         if (!isEmpty(mismatch)) {
-            console.log(`Row ${rowId} has these differences: ${mismatchJson}`);
+            console.log(`Row ${rowId} has these differences: ${mismatchDataJson}`);
         }
 
         if (!isEmpty(missingOnPolicyData)) {
@@ -124,10 +124,16 @@ async function comparePropertyDataForOnePolicy(localDBConnection: Sequelize): Pr
 
         const updateSuccessQuery = `update ${tableName} `
             + `set status ='${StatusEnum.Processed}', `
-            + ` field_differences = to_jsonb( '${mismatchJson}' ::json), `
-            + ` missing_policy_fields = to_jsonb( '${missingOnPolicyDataJson}' ::json) `
+            + ` field_differences = to_jsonb( :mismatchJson ::json), `
+            + ` missing_policy_fields = to_jsonb( :missingOnPolicyJson ::json) `
             + `where id = '${rowId}';`;
-        await localDBConnection.query(updateSuccessQuery, { transaction });
+        await localDBConnection.query(updateSuccessQuery, {
+            transaction,
+            replacements: {
+                mismatchJson: mismatchDataJson,
+                missingOnPolicyJson: missingOnPolicyDataJson,
+            },
+        });
         await transaction.commit();
 
         // script should continue by handling next row

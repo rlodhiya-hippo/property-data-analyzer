@@ -100,22 +100,25 @@ async function retrievePropertyDataForOnePolicy(
 
         try {
             const vendorPropertyData = await propertyServiceAPIClient.unary.validatedPropertyRetrieveVendorData({ id: propertyId });
+            const propertyData = await propertyServiceAPIClient.unary.validatedPropertyRetrieve({ id: propertyId, revision: vendorPropertyData.revision });
             const policyData = await policyServiceAPIClient.unary.insurancePolicyRetrieve({ id: policyId });
 
-            /* escape ' char for writing string - can try to use sequelize bind / replacements to handle string char escape */
             const vendorPropertyDataJson = JSON.stringify(vendorPropertyData);
+            const propertyDataJson = JSON.stringify(propertyData);
             const policyDataJson = JSON.stringify(policyData);
 
             const updateSuccessQuery = `update ${tableName} `
                 + `set status ='${StatusEnum.Fetched}', `
                 + ` policy_data = to_jsonb( :policyJson ::json), `
-                + ` vendor_property_data = to_jsonb( :vendorPropertyJson ::json) `
+                + ` vendor_property_data = to_jsonb( :vendorPropertyJson ::json), `
+                + ` property_data = to_jsonb( :propertyJson ::json) `
                 + `where id = '${rowId}';`;
             await localDBConnection.query(updateSuccessQuery, {
                 transaction,
                 replacements: {
                     policyJson: policyDataJson,
                     vendorPropertyJson: vendorPropertyDataJson,
+                    propertyJson: propertyDataJson,
                 },
             });
             await transaction.commit();
