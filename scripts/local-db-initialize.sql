@@ -28,7 +28,8 @@ create index policy_property_map_property_id_idx on policy_property_map (propert
 -- set
 --     status = 'pending',
 --     policy_data = null,
---     vendor_property_data = null
+--     vendor_property_data = null,
+--     property_data = null
 -- where
 --     status in ('fetched', 'processed', 'complete', 'failed');
 
