@@ -19,9 +19,10 @@ class FieldPath {
 class ParseRoofDataResponse {
     vendorYearRoofBuilt?: number;
     policyYearRoofBuilt?: number;
-    diffYearRoofBuilt?: number;
-    diffVendorYearRoofBuilt?: number;
     vendorRoofCondition?: string
+    roofAgeCustomer?: number;
+    roofAgeVendor?: number;
+    roofAgeDiff?: number;
 }
 
 const compareFieldPaths: FieldPath[] = [
@@ -85,27 +86,30 @@ async function comparePropertyDataForOnePolicy(localDBConnection: Sequelize): Pr
         const {
             vendorYearRoofBuilt,
             policyYearRoofBuilt,
-            diffYearRoofBuilt,
-            diffVendorYearRoofBuilt,
             vendorRoofCondition,
+            roofAgeCustomer,
+            roofAgeVendor,
+            roofAgeDiff,
         } = parseRoofData(vendorPropertyData, policyData, boundYear);
 
         const updateSuccessQuery = `update ${tableName} `
             + `set status ='${StatusEnum.Processed}', `
             + ` vendor_year_roof_built = :vendorYearRoofBuilt , `
             + ` policy_year_roof_built = :policyYearRoofBuilt , `
-            + ` diff_year_roof_built = :diffYearRoofBuilt , `
-            + ` diff_vendor_year_roof_built = :diffVendorYearRoofBuilt ,`
-            + ` vendor_roof_condition = :vendorRoofCondition `
+            + ` vendor_roof_condition = :vendorRoofCondition ,`
+            + ` roof_age_customer = :roofAgeCustomer , `
+            + ` roof_age_vendor = :roofAgeVendor ,`
+            + ` diff_roof_age_customer_vendor = :roofAgeDiff `
             + `where id = '${rowId}';`;
         await localDBConnection.query(updateSuccessQuery, {
             transaction,
             replacements: {
                 vendorYearRoofBuilt: vendorYearRoofBuilt ?? null,
                 policyYearRoofBuilt: policyYearRoofBuilt ?? null,
-                diffYearRoofBuilt: diffYearRoofBuilt ?? null,
-                diffVendorYearRoofBuilt: diffVendorYearRoofBuilt ?? null,
                 vendorRoofCondition: vendorRoofCondition ?? null,
+                roofAgeCustomer: roofAgeCustomer ?? null,
+                roofAgeVendor: roofAgeVendor ?? null,
+                roofAgeDiff: roofAgeDiff ?? null,
             },
         });
         await transaction.commit();
@@ -118,19 +122,23 @@ async function comparePropertyDataForOnePolicy(localDBConnection: Sequelize): Pr
 function parseRoofData(vendorPropertyData: Record<string, unknown>, policyData: Record<string, unknown>, boundYear: number): ParseRoofDataResponse {
     let vendorYearRoofBuilt: number | undefined;
     let policyYearRoofBuilt: number | undefined;
-    let diffYearRoofBuilt: number | undefined;
-    let diffVendorYearRoofBuilt: number | undefined;
     let vendorRoofCondition: string | undefined;
+    let roofAgeCustomer: number | undefined;
+    let roofAgeVendor: number | undefined;
+    let roofAgeDiff: number | undefined;
 
     const yearRoofBuiltPath: FieldPath | undefined = find(compareFieldPaths, (fieldPath) => fieldPath.fieldName === 'yearRoofBuilt');
     if (yearRoofBuiltPath) {
         vendorYearRoofBuilt = first(JSONPath({ path: yearRoofBuiltPath.propertyDataPath, json: vendorPropertyData })) as number | undefined;
         policyYearRoofBuilt = first(JSONPath({ path: yearRoofBuiltPath.policyDataPath, json: policyData })) as number | undefined;
         if (policyYearRoofBuilt) {
-            diffYearRoofBuilt = boundYear - policyYearRoofBuilt;
+            roofAgeCustomer = boundYear - policyYearRoofBuilt;
+        }
+        if (vendorYearRoofBuilt) {
+            roofAgeVendor = boundYear - vendorYearRoofBuilt;
         }
         if (policyYearRoofBuilt && vendorYearRoofBuilt) {
-            diffVendorYearRoofBuilt = policyYearRoofBuilt - vendorYearRoofBuilt;
+            roofAgeDiff = policyYearRoofBuilt - vendorYearRoofBuilt;
         }
     }
 
@@ -142,9 +150,10 @@ function parseRoofData(vendorPropertyData: Record<string, unknown>, policyData: 
     return {
         vendorYearRoofBuilt,
         policyYearRoofBuilt,
-        diffYearRoofBuilt,
-        diffVendorYearRoofBuilt,
-        vendorRoofCondition
+        vendorRoofCondition,
+        roofAgeCustomer,
+        roofAgeVendor,
+        roofAgeDiff,
     };
 }
 

@@ -23,9 +23,10 @@ create table policy_property_map (
     property_data jsonb null,
     vendor_year_roof_built integer null,
     policy_year_roof_built integer null,
-    diff_year_roof_built integer null,
-    diff_vendor_year_roof_built integer null,
-    vendor_roof_condition varchar(50) null
+    vendor_roof_condition varchar(50) null,
+    roof_age_customer integer null,
+    roof_age_vendor integer null,
+    diff_roof_age_customer_vendor integer null
 );
 
 create index policy_property_map_policy_uuid_idx on policy_property_map (policy_uuid);
