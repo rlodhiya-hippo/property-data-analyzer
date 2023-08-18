@@ -14,7 +14,7 @@ create table policy_property_map (
     policy_uuid uuid not null,
 	policy_bound_date date not null,
     property_id uuid not null,
-    quoteInsuranceScore integer not null,
+    quote_insurance_score integer not null,
     customer_segment varchar(50) not null,
     customer_segment_normalized varchar(50) not null,
     status statusEnum not null default 'pending',
